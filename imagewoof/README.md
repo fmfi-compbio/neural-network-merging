@@ -1,6 +1,6 @@
 # Prelimiries
 
-'python setup.py' - download dataset and create directories 'teachers' and 'students'
+`python setup.py` - download dataset and create directories 'teachers' and 'students'
 
 # Training teachers
 
