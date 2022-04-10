@@ -9,14 +9,15 @@ from student import Student
 from dataset import TrainLoader, TestLoader
 from plot_history import plot_history, plot_gate_values
 from tqdm import tqdm
+import sys
 
 
-def initialize_student(student_num):
+def initialize_student(teacher_num1, teacher_num2):
     teacher1 = Teacher()
-    teacher1.load_state_dict(torch.load('teachers/teacher{}.pt'.format(2 * student_num)))
+    teacher1.load_state_dict(torch.load('teachers/teacher{}.pt'.format(teacher_num1)))
 
     teacher2 = Teacher()
-    teacher2.load_state_dict(torch.load('teachers/teacher{}.pt'.format(student_num * 2 + 1)))
+    teacher2.load_state_dict(torch.load('teachers/teacher{}.pt'.format(teacher_num2)))
 
     return Student(teacher1, teacher2)
 
@@ -124,21 +125,24 @@ def train_student_second_stage(student):
     return history
 
 
-def train_students():
-    for i in [0]:
-        student = initialize_student(i)
-        history, gate_values = train_student_first_stage(student)
-        plot_history(history, [0, 1, 2], ['train', 'l0', 'test'], 'students/before_compress_losses{}.png'.format(i))
-        plot_history(history, [3, 4], ['train acc', 'test acc'], 'students/before_compress_acc{}.png'.format(i))
-        plot_gate_values(gate_values, i)
+def main():
+    student_num = int(sys.argv[1])
+    teacher_num1 = int(sys.argv[2])
+    teacher_num2 = int(sys.argv[3])
+    student = initialize_student(teacher_num1, teacher_num2)
+    history, gate_values = train_student_first_stage(student)
+    plot_history(history, [0, 1, 2], ['train', 'l0', 'test'],
+                 'students/before_compress_losses{}.png'.format(student_num))
+    plot_history(history, [3, 4], ['train acc', 'test acc'], 'students/before_compress_acc{}.png'.format(student_num))
+    plot_gate_values(gate_values, student_num)
 
-        student.compress()
+    student.compress()
 
-        history = train_student_second_stage(student)
-        plot_history(history, [0, 1], ['train loss', 'test loss'], 'students/student_losses{}.png'.format(i))
-        plot_history(history, [2, 3], ['train acc', 'test acc'], 'students/student_acc{}.png'.format(i))
-        torch.save(student.state_dict(), 'students/student{}.pt'.format(i))
+    history = train_student_second_stage(student)
+    plot_history(history, [0, 1], ['train loss', 'test loss'], 'students/student_losses{}.png'.format(student_num))
+    plot_history(history, [2, 3], ['train acc', 'test acc'], 'students/student_acc{}.png'.format(student_num))
+    torch.save(student.state_dict(), 'students/student{}.pt'.format(student_num))
 
 
 if __name__ == '__main__':
-    train_students()
+    main()

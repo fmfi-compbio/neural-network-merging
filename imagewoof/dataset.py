@@ -3,8 +3,9 @@ from torchvision.datasets.utils import download_url
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 import torchvision.transforms as tt
+import os
 
-data_dir = '/data/martin/imagewoof2-160'
+data_dir = './imagewoof2-160'
 
 
 class TrainLoader:
@@ -62,9 +63,11 @@ class TestLoader:
 def download_dataset():
     # download the dataset
     dataset_url = "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-160.tgz"
-    download_url(dataset_url, '..')
+    download_url(dataset_url, '.')
 
     # extract the archive
 
-    with tarfile.open('../imagewoof2-160.tgz', 'r:gz') as tar:  # read file in r mode
-        tar.extractall(path='..')  # extract all folders from zip file and store under folder named data
+    with tarfile.open('./imagewoof2-160.tgz', 'r:gz') as tar:  # read file in r mode
+        tar.extractall(path='.')  # extract all folders from zip file and store under folder named data
+
+    os.remove('./imagewoof2-160.tgz')
