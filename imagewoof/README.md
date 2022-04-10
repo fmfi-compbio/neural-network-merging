@@ -4,7 +4,7 @@
 
 # Training teachers
 
-`python train_teacher.py <teacher_num>` - train teacher with <teacher_num> number. Save the model and training/validating results to directorie 'teachers'
+`python train_teacher.py <teacher_num>` - train teacher with <teacher_num> number. Save the model and training/validating results to directorie 'teachers'\
 `python train__long_teacher.py <teacher_num>` - train long teacher (3 * epochs) with <teacher_num> number. Save the model and training/validating results to directorie 'teachers'
 
 # Training student
